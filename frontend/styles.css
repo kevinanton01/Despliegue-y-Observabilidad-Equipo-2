@@ -1,0 +1,152 @@
+* {
+  box-sizing: border-box;
+  }
+
+html,
+body {
+margin: 0;
+min-height: 100%;
+}
+
+body {
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+font-family: Arial, Helvetica, sans-serif;
+background: #f4f6f8;
+color: #1f2933;
+}
+
+/* =========================
+HEADER
+========================= */
+
+.header {
+position: relative;
+min-height: 130px;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 25px 40px;
+background: #1f2937;
+color: white;
+box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+.materia {
+position: absolute;
+left: 40px;
+font-size: 1rem;
+font-weight: 600;
+letter-spacing: 0.3px;
+}
+
+.titulo-docker {
+display: flex;
+align-items: center;
+gap: 15px;
+}
+
+.titulo-docker img {
+width: 55px;
+height: 55px;
+object-fit: contain;
+}
+
+.titulo-docker span {
+font-size: 2.2rem;
+font-weight: 700;
+letter-spacing: 4px;
+}
+
+/* =========================
+CONTENIDO
+========================= */
+
+.contenido {
+flex: 1;
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 50px 20px;
+}
+
+.tarjeta {
+width: min(650px, 90%);
+padding: 45px;
+text-align: center;
+background: white;
+border-radius: 16px;
+box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.tarjeta h1 {
+margin: 0 0 20px;
+font-size: 2.2rem;
+}
+
+.tarjeta p {
+margin: 0;
+font-size: 1.05rem;
+line-height: 1.6;
+color: #667085;
+}
+
+/* =========================
+FOOTER
+========================= */
+
+.footer {
+padding: 25px 20px;
+text-align: center;
+background: #111827;
+color: white;
+}
+
+.footer h3 {
+margin: 0 0 15px;
+font-size: 1.1rem;
+}
+
+.integrantes {
+display: flex;
+justify-content: center;
+flex-wrap: wrap;
+gap: 10px 25px;
+font-size: 0.95rem;
+color: #d1d5db;
+}
+
+/* =========================
+RESPONSIVE
+========================= */
+
+@media (max-width: 700px) {
+
+
+.header {
+    flex-direction: column;
+    gap: 20px;
+    padding: 25px 20px;
+}
+
+.materia {
+    position: static;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.titulo-docker span {
+    font-size: 1.8rem;
+}
+
+.tarjeta {
+    padding: 30px 20px;
+}
+
+.tarjeta h1 {
+    font-size: 1.7rem;
+}
+
+
+}
