@@ -1,21 +1,38 @@
 services:
 
+  # ============================================================
+  # BASE DE DATOS - MYSQL
+  # ============================================================
   mysql:
     image: mysql:8.0
     container_name: docker-tp-mysql
 
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: docker_tp
-      MYSQL_USER: docker_user
-      MYSQL_PASSWORD: docker_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
     volumes:
+      # Volumen para conservar los datos de MySQL
       - mysql_data:/var/lib/mysql
+
+      # Script inicial de creación de tablas y datos
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      # Verifica que MySQL esté listo para aceptar conexiones
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p${MYSQL_ROOT_PASSWORD}"
+        ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -25,47 +42,71 @@ services:
       - docker_tp_network
 
 
+  # ============================================================
+  # BACKEND - FASTAPI
+  # ============================================================
   backend:
     build:
+      # Directorio donde se encuentra el Dockerfile del backend
       context: ./backend
       dockerfile: Dockerfile
 
     container_name: docker-tp-backend
 
+    environment:
+      # Variables utilizadas por FastAPI para conectarse a MySQL
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: mysql
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+
     depends_on:
+      # FastAPI espera a que MySQL esté saludable
       mysql:
         condition: service_healthy
 
     ports:
-      - "8000:8000"
+      # Puerto de la PC : puerto del contenedor
+      - "${BACKEND_PORT}:8000"
 
     networks:
       - docker_tp_network
 
 
+  # ============================================================
+  # FRONTEND - NGINX
+  # ============================================================
   frontend:
-    image: nginx:alpine
+    build:
+      # Directorio donde se encuentra el Dockerfile del frontend
+      context: ./frontend
+      dockerfile: Dockerfile
 
     container_name: docker-tp-frontend
 
     depends_on:
+      # El frontend se inicia después del backend
       - backend
 
     ports:
-      - "80:80"
-
-    volumes:
-      - ./frontend:/usr/share/nginx/html:ro
-      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      # Puerto de la PC : puerto del contenedor
+      - "${FRONTEND_PORT}:80"
 
     networks:
       - docker_tp_network
 
 
+# ============================================================
+# VOLUMEN
+# ============================================================
 volumes:
   mysql_data:
 
 
+# ============================================================
+# RED
+# ============================================================
 networks:
   docker_tp_network:
     driver: bridge
