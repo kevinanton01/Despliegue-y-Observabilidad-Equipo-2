@@ -1,27 +1,23 @@
 services:
 
   # ============================================================
-  # BASE DE DATOS - MYSQL
+  # BASE DE DATOS - MYSQL LOCAL (se conserva, pero no se usa)
   # ============================================================
   mysql:
     image: mysql:8.0
     container_name: docker-tp-mysql
 
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-local_root_password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-docker_tp}
+      MYSQL_USER: ${MYSQL_USER:-docker_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-docker_password}
 
     volumes:
-      # Volumen para conservar los datos de MySQL
       - mysql_data:/var/lib/mysql
-
-      # Script inicial de creación de tablas y datos
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
     healthcheck:
-      # Verifica que MySQL esté listo para aceptar conexiones
       test:
         [
           "CMD",
@@ -31,7 +27,7 @@ services:
           "localhost",
           "-u",
           "root",
-          "-p${MYSQL_ROOT_PASSWORD}"
+          "-p${MYSQL_ROOT_PASSWORD:-local_root_password}"
         ]
       interval: 5s
       timeout: 5s
@@ -43,35 +39,26 @@ services:
 
 
   # ============================================================
-  # BACKEND - FASTAPI
+  # BACKEND - FASTAPI CON TIDB CLOUD
   # ============================================================
   backend:
     build:
-      # Directorio donde se encuentra el Dockerfile del backend
       context: ./backend
       dockerfile: Dockerfile
 
     container_name: docker-tp-backend
 
     environment:
-      # Variables utilizadas por FastAPI para conectarse a MySQL
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_HOST: mysql
-      MYSQL_PORT: ${MYSQL_PORT}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT:-4000}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-docker_tp}
 
-      # DSN utilizado por Sentry
       SENTRY_DSN: ${SENTRY_DSN}
 
-    depends_on:
-      # FastAPI espera a que MySQL esté saludable
-      mysql:
-        condition: service_healthy
-
     ports:
-      # Puerto de la PC : puerto del contenedor
-      - "${BACKEND_PORT}:8000"
+      - "${BACKEND_PORT:-8000}:8000"
 
     networks:
       - docker_tp_network
@@ -82,19 +69,16 @@ services:
   # ============================================================
   frontend:
     build:
-      # Directorio donde se encuentra el Dockerfile del frontend
       context: ./frontend
       dockerfile: Dockerfile
 
     container_name: docker-tp-frontend
 
     depends_on:
-      # El frontend se inicia después del backend
       - backend
 
     ports:
-      # Puerto de la PC : puerto del contenedor
-      - "${FRONTEND_PORT}:80"
+      - "${FRONTEND_PORT:-80}:80"
 
     networks:
       - docker_tp_network

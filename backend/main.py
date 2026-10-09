@@ -41,3 +41,9 @@ def obtener_usuario(usuario_id: int):
 
     finally:
         db.close()
+
+
+# @app.get("/error")
+# def provocar_error():
+#     resultado = 10 / 0
+#     return {"resultado": resultado}
