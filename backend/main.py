@@ -1,16 +1,32 @@
+
 import os
 import sentry_sdk
+
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from database import SessionLocal
 
+
 sentry_sdk.init(
-    dsn=os.getenv("SENTRY_DSN"),    # El DSN no queda escrito dentro del código.
+    dsn=os.getenv("SENTRY_DSN"),
     send_default_pii=False
 )
 
 app = FastAPI()
+
+
+# Permitir que el frontend se comunique con el backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://despliegue-y-observabilidad-equipo-five.vercel.app"
+    ],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
