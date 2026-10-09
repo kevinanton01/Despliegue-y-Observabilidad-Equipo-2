@@ -58,8 +58,13 @@ def obtener_usuario(usuario_id: int):
     finally:
         db.close()
 
-
-# @app.get("/error")
-# def provocar_error():
-#     resultado = 10 / 0
-#     return {"resultado": resultado}
+@app.get("/probar-sentry")
+def probar_sentry():
+    try:
+        resultado = 1 / 0
+    except ZeroDivisionError as error:
+        sentry_sdk.capture_exception(error)
+        raise HTTPException(
+            status_code=500,
+            detail="Error de prueba enviado a Sentry"
+        )
