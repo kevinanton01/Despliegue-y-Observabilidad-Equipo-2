@@ -1,7 +1,14 @@
+import os
+import sentry_sdk
 from fastapi import FastAPI, HTTPException
 from sqlalchemy import text
 
 from database import SessionLocal
+
+sentry_sdk.init(
+    dsn=os.getenv("SENTRY_DSN"),    # El DSN no queda escrito dentro del código.
+    send_default_pii=False
+)
 
 app = FastAPI()
 

@@ -61,6 +61,9 @@ services:
       MYSQL_PORT: ${MYSQL_PORT}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
 
+      # DSN utilizado por Sentry
+      SENTRY_DSN: ${SENTRY_DSN}
+
     depends_on:
       # FastAPI espera a que MySQL esté saludable
       mysql:
