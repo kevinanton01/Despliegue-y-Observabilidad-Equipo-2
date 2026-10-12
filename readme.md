@@ -173,7 +173,15 @@ Para permitir el acceso a la aplicación desde Internet, se configuró el despli
 
 URL pública:
 
-https://despliegue-y-observabilidad-equipo.vercel.app/
+
+| Componente | URL |
+|---|---|
+| Frontend (página con el mensaje de bienvenida) | https://despliegue-y-observabilidad-equipo-five.vercel.app |
+| Backend (API FastAPI) | https://despliegue-y-observabilidad-equipo.vercel.app |
+| Documentación interactiva de la API (Swagger) | https://despliegue-y-observabilidad-equipo.vercel.app/docs |
+| Ruta que provoca el error a propósito (para Sentry) | https://despliegue-y-observabilidad-equipo.vercel.app/probar-sentry |
+| Repositorio de GitHub | https://github.com/kevinanton01/Despliegue-y-Observabilidad-Equipo-2 |
+
 
 El backend utiliza las variables de entorno configuradas en el entorno de despliegue para conectarse a la base de datos externa de TiDB Cloud.
 
@@ -203,6 +211,18 @@ La configuración se realizó mediante los siguientes pasos:
 
 Desde el panel de Sentry se pueden consultar los errores registrados y obtener información técnica para facilitar su diagnóstico.
 
+### Variables de entorno
+
+Las credenciales no están en el código ni en GitHub. Se configuran como variables de entorno en el panel de Vercel (el archivo `.env` está en el `.gitignore`).
+
+| Variable | Contenido |
+|---|---|
+| `MYSQL_HOST` | Host de la base de datos en TiDB Cloud |
+| `MYSQL_PORT` | Puerto de conexión (en TiDB Cloud es el 4000) |
+| `MYSQL_USER` | Usuario de la base de datos |
+| `MYSQL_PASSWORD` | Contraseña de la base de datos |
+| `MYSQL_DATABASE` | Nombre de la base de datos |
+| `SENTRY_DSN` | Dirección privada del proyecto en Sentry |
 ## Tecnologías utilizadas
 
 - **Python:** lenguaje utilizado para desarrollar el backend.
