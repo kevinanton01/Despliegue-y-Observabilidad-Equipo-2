@@ -58,13 +58,8 @@ def obtener_usuario(usuario_id: int):
     finally:
         db.close()
 
-@app.get("/probar-sentry")
-def probar_sentry():
-    try:
-        resultado = 1 / 0
-    except ZeroDivisionError as error:
-        sentry_sdk.capture_exception(error)
-        raise HTTPException(
-            status_code=500,
-            detail="Error de prueba enviado a Sentry"
-        )
+
+@app.get("/sentry-debug")
+async def sentry_debug():
+    division = 1 / 0
+    return {"resultado": division}

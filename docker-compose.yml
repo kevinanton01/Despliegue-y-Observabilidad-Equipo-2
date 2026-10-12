@@ -55,7 +55,7 @@ services:
       MYSQL_PORT: ${MYSQL_PORT:-4000}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-docker_tp}
 
-      SENTRY_DSN: ${SENTRY_DSN}
+      SENTRY_DSN: ${SENTRY_DSN} # SENTRY_DSN=https://...ingest.us.sentry.io/...
 
     ports:
       - "${BACKEND_PORT:-8000}:8000"
