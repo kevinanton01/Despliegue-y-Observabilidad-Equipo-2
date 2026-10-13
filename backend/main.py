@@ -59,7 +59,3 @@ def obtener_usuario(usuario_id: int):
         db.close()
 
 
-@app.get("/sentry-debug")
-async def sentry_debug():
-    division = 1 / 0
-    return {"resultado": division}
