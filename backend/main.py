@@ -57,5 +57,3 @@ def obtener_usuario(usuario_id: int):
 
     finally:
         db.close()
-
-
